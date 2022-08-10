@@ -8,64 +8,86 @@ var auth = require('./auth.json');
 
 logger.remove(logger.transports.Console);
 
-logger.add(new logger.transports.Console, {
-
-    colorize: true
-});
+logger.add(new logger.transports.Console, { colorize: true });
 
 logger.level = 'debug';
 
-// Initialize Discord Bot
-
-var bot = new Discord.Client({
-
-    token: auth.token,
-
-    autorun: true
-
-});
+var bot = new Discord.Client({ token: auth.token, autorun: true });
 
 bot.on('ready', function (evt) {
-
     logger.info('Connected');
-
     logger.info('Logged in as: ');
-
     logger.info(bot.username + ' - (' + bot.id + ')');
+
+    this.weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+    this.checkIns = [
+        { start: "7:55:00 AM", end: "8:03:00 AM", seen: false },
+        { start: "12:55:00 PM", end: "1:03:00 PM", seen: false },
+        { start: "2:55:00 PM", end: "3:03:00 PM", seen: false },
+
+        { start: "4:49:45 PM", end: "11:59:00 PM", seen: false },  // TEST
+    ];
+
+    this.timezone = 'America/Los_Angeles';
+
+    this.today = new Date().toLocaleString('en-US', { timeZone: this.timezone, weekday: 'long' })  // Monday
 });
 
+bot.checkTime = function (channelID) {
+    const dayOfWeek = new Date().toLocaleString('en-US', { timeZone: this.timezone, weekday: 'long' })  // "Monday"
+    const fullDate = new Date().toLocaleString('en-US', { timeZone: this.timezone })  // '8/10/2022, 4:19:54 PM'
+    const date = fullDate.split(',')[0]  // '8/10/2022'
+
+    console.log("Checking time:", dayOfWeek, fullDate, "PST")
+
+    // Reset check in reminders each day
+    if (dayOfWeek !== this.today) {
+        console.log("New day")
+        this.today = dayOfWeek;
+        for (let checkIn of this.checkIns) checkIn.seen = false;
+    }
+
+    // Don't remind on weekends
+    if (!this.weekdays.includes(dayOfWeek)) {
+        console.log("Invalid weekday")
+        return;
+    }
+
+    // Check
+    for (let checkIn of this.checkIns) {
+        const start = date + ", " + checkIn.start;
+        const end = date + ", " + checkIn.end;
+        if (!checkIn.seen && new Date(fullDate) >= new Date(start) && new Date(fullDate) < new Date(end)) {
+            this.sendMessage({ to: channelID, message: "@here Don't forget to check in" });
+            checkIn.seen = true;
+        }
+    }
+}
+
 bot.on('message', function (user, userID, channelID, message, evt) {
-
-    // Our bot needs to know if it will execute a command
-
-    // It will listen for messages that will start with `!`
 
     if (message.substring(0, 1) == '!') {
 
         var args = message.substring(1).split(' ');
-
-        var cmd = args[0];
-
-
-        args = args.splice(1);
+        var cmd = args.shift();
 
         switch (cmd) {
 
-            // !ping
-
             case 'ping':
-
-                bot.sendMessage({
-
-                    to: channelID,
-
-                    message: 'Pong!'
-
-                });
-
+                bot.sendMessage({ to: channelID, message: 'Pong!' });
                 break;
 
-            // Just add any case commands if you want to..
+            case 'start':
+                bot.sendMessage({ to: channelID, message: 'Starting OPERATION: REMIND-ALL-OF-CHECK-INS' });
+                if (!bot.checkerId) bot.checkerId = setInterval(bot.checkTime.bind(bot), 1000, channelID);
+                break;
+
+            // case 'stop':
+            //     bot.sendMessage({ to: channelID, message: 'Stopping OPERATION REMIND-ALL-OF-CHECK-INS' });
+            //     clearInterval(bot.checkerId)
+            //     bot.checkerId = undefined;
+            //     break;
 
         }
 
