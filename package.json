@@ -1,0 +1,11 @@
+{
+    "name": "check-in-reminder",
+    "version": "1.0.0",
+    "description": "Check In Reminder Bot",
+    "main": "bot.js",
+    "author": "Matt Kleinsmith",
+    "dependencies": {
+        "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
+        "winston": "^3.8.1"
+    }
+}
