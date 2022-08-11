@@ -22,11 +22,11 @@ bot.on('ready', function (evt) {
     this.weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
     this.checkIns = [
-        { start: "7:55:00 AM", end: "8:03:00 AM", seen: false },
-        { start: "12:55:00 PM", end: "1:03:00 PM", seen: false },
-        { start: "2:55:00 PM", end: "3:03:00 PM", seen: false },
+        { start: "7:55:00 AM", end: "8:03:00 AM", seen: false, isReport: false },
+        { start: "12:25:00 PM", end: "1:03:00 PM", seen: false, isReport: false },
+        { start: "2:55:00 PM", end: "3:03:00 PM", seen: false, isReport: false },
 
-        { start: "4:49:45 PM", end: "11:59:00 PM", seen: false },  // TEST
+        { start: "6:00:00 PM", end: "11:59:00 PM", seen: false, isReport: true },  // Report
     ];
 
     this.timezone = 'America/Los_Angeles';
@@ -59,7 +59,11 @@ bot.checkTime = function (channelID) {
         const start = date + ", " + checkIn.start;
         const end = date + ", " + checkIn.end;
         if (!checkIn.seen && new Date(fullDate) >= new Date(start) && new Date(fullDate) < new Date(end)) {
-            this.sendMessage({ to: channelID, message: "@here Don't forget to check in" });
+            if (checkIn.isReport) {
+                this.sendMessage({ to: channelID, message: "@here Don't forget to submit the report on Progress Tracker" });
+            } else {
+                this.sendMessage({ to: channelID, message: "@here Don't forget to check in" });
+            }
             checkIn.seen = true;
         }
     }
@@ -79,7 +83,13 @@ bot.on('message', function (user, userID, channelID, message, evt) {
                 break;
 
             case 'start':
-                bot.sendMessage({ to: channelID, message: 'Starting OPERATION: REMIND-ALL-OF-CHECK-INS' });
+                const times = bot.checkIns.map(checkIn => checkIn.start);
+                const checkInTimes = times.slice(0, times.length - 1).join(", ");
+                const reportTime = times[times.length - 1]
+                bot.sendMessage({
+                    to: channelID,
+                    message: "I will ping at these times (PST): " + checkInTimes + ", and " + reportTime + ` (for the daily report). Don't rely on me, though. If my computer crashes or my Internet goes down, I won't be able to ping.`
+                });
                 if (!bot.checkerId) bot.checkerId = setInterval(bot.checkTime.bind(bot), 1000, channelID);
                 break;
 
