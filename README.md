@@ -3,4 +3,4 @@
 TODO:
 
 - [x] Add reminders for check ins and reports
-- [ ] Switch to [discord.js](https://discord.js.org)
+- [x] Switch to [discord.js](https://discord.js.org)

@@ -5,7 +5,7 @@
     "main": "bot.js",
     "author": "Matt Kleinsmith",
     "dependencies": {
-        "discord.io": "https://github.com/woor/discord.io/tarball/gateway_v6",
-        "winston": "^3.8.1"
+        "@discordjs/rest": "^1.0.1",
+        "discord.js": "^14.2.0"
     }
 }
