@@ -54,11 +54,14 @@ client.checkTime = async function (interaction) {
         const end = date + ", " + checkIn.end;
         if (!checkIn.seen && new Date(fullDate) >= new Date(start) && new Date(fullDate) < new Date(end)) {
             console.log("Sending reminder");
+
+            const role = interaction.guild.roles.cache.find(r => r.name === "Codebusters");
+
             if (checkIn.isReport) {
                 // TODO: Do not follow up. Just send a message to that channel.
-                await interaction.channel.send("@Codebusters Don't forget to fill out the daily report");
+                await interaction.channel.send(`<@&${role.id}> Don't forget to fill out the daily report`);
             } else {
-                await interaction.channel.send("@Codebusters Don't forget to check in");
+                await interaction.channel.send(`<@&${role.id}> Don't forget to check in`);
             }
             checkIn.seen = true;
         }
@@ -67,7 +70,12 @@ client.checkTime = async function (interaction) {
 
 client.test = async function (interaction) {
     console.log("Running test");
+    await interaction.reply(".", { ephemeral: true });
+    await interaction.deleteReply();
+    // const role = interaction.guild.roles.cache.find(r => r.name === "Codebusters");
+    // await interaction.channel.send(`<@&${role.id}> This is a test. Sorry for the spam.`);
 }
+
 
 client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
