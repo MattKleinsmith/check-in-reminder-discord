@@ -29,6 +29,10 @@ client.once('ready', () => {
     client.timezone = 'America/Los_Angeles';
 
     client.today = new Date().toLocaleString('en-US', { timeZone: this.timezone, weekday: 'long' })  // Monday
+
+    // Get guild object via guild name substring "App Academy August-01-2022 Cohort"
+    // Get channel object via channel id: 1001711778952130662
+
 });
 
 client.checkTime = async function (interaction) {
@@ -116,16 +120,15 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     if (userJoinedChannel && newState.member.displayName !== client.user.username) {
         console.log(newState.member.displayName, 'joined a voice channel', oldChannel, newChannel);
 
-        const url = googleTTS.getAudioUrl(newState.member.displayName, {
-            lang: 'en',
-            slow: false,
-            host: 'https://translate.google.com',
-        });
-        console.log(url)
-
         const literalPath = `cache/${newState.member.displayName}.mp3`;
         const dest = path.resolve(__dirname, literalPath); // file destination
         if (!fs.existsSync(literalPath)) {
+            const url = googleTTS.getAudioUrl("Hi " + newState.member.displayName, {
+                lang: 'en',
+                slow: false,
+                host: 'https://translate.google.com',
+            });
+            console.log(url)
             console.log('Download to ' + dest + ' ...');
             await downloadFile(url, dest);
             console.log('Download success');
@@ -164,7 +167,7 @@ client.on('interactionCreate', async interaction => {
     if (commandName === 'ping') {
 
         console.log("ping")
-        await interaction.reply("Pong! (but it's a reply and ephemeral", { ephemeral: true });
+        await interaction.reply("Pong! (but it's a reply and ephemeral)", { ephemeral: true });
         await interaction.deleteReply();
         await interaction.channel.send('Pong!')
 
