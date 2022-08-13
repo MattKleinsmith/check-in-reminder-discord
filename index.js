@@ -125,7 +125,8 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         const literalPath = `cache/${newState.member.displayName}.mp3`;
         const dest = path.resolve(__dirname, literalPath); // file destination
         if (!fs.existsSync(literalPath)) {
-            const url = googleTTS.getAudioUrl(newState.member.displayName, {
+            const utterance = newState.member.displayName + " has joined";
+            const url = googleTTS.getAudioUrl(utterance, {
                 lang: 'en',
                 slow: false,
                 host: 'https://translate.google.com',
