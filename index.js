@@ -12,7 +12,7 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
-    console.log('Ready!', client.user.username);
+    console.log('Ready!', client.user.username, "\n");
 
     client.weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
@@ -117,7 +117,9 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     const newChannel = newState.channel ? snowflakeToString(newState.channel.id) : newState.channel;
 
     const userJoinedChannel = (oldChannel !== newChannel) && ((!oldChannel && newChannel) || (oldChannel && newChannel));
-    if (userJoinedChannel && newState.member.displayName !== client.user.username) {
+    if (userJoinedChannel &&
+        newState.member.displayName !== client.user.username &&
+        newState.channel.members.size >= 3) {  // Two or more users + one joiner
         console.log(newState.member.displayName, 'joined a voice channel', oldChannel, newChannel);
 
         const literalPath = `cache/${newState.member.displayName}.mp3`;
@@ -153,7 +155,7 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
         player.play(resource)
 
         player.on(AudioPlayerStatus.Idle, () => {
-            console.log('Leaving the voice channel');
+            console.log('Leaving the voice channel\n');
             connection.destroy();
         });
     }
