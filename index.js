@@ -116,14 +116,14 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
     const oldChannel = oldState.channel ? snowflakeToString(oldState.channel.id) : oldState.channel;
     const newChannel = newState.channel ? snowflakeToString(newState.channel.id) : newState.channel;
 
-    const userJoinedChannel = (!oldChannel && newChannel) || (oldChannel && newChannel);
+    const userJoinedChannel = (oldChannel !== newChannel) && ((!oldChannel && newChannel) || (oldChannel && newChannel));
     if (userJoinedChannel && newState.member.displayName !== client.user.username) {
         console.log(newState.member.displayName, 'joined a voice channel', oldChannel, newChannel);
 
         const literalPath = `cache/${newState.member.displayName}.mp3`;
         const dest = path.resolve(__dirname, literalPath); // file destination
         if (!fs.existsSync(literalPath)) {
-            const url = googleTTS.getAudioUrl("Hi " + newState.member.displayName, {
+            const url = googleTTS.getAudioUrl(newState.member.displayName, {
                 lang: 'en',
                 slow: false,
                 host: 'https://translate.google.com',
