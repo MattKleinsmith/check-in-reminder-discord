@@ -1,4 +1,4 @@
-const { downloadFile } = require('./download.js');
+const { downloadFile } = require('../tools/download.js');
 const { joinVoiceChannel, createAudioResource, createAudioPlayer, AudioPlayerStatus } = require('@discordjs/voice');
 const googleTTS = require('google-tts-api');
 const path = require('path');

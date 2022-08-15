@@ -23,7 +23,7 @@ const remind = async function (interaction) {
 
     console.log("Checking time:", dayOfWeek, fullDate, "PST")
 
-    // Reset check in reminders each day
+    // Reset check-in reminders each day
     if (dayOfWeek !== this.today) {
         console.log("New day")
         this.today = dayOfWeek;

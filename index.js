@@ -1,8 +1,8 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
-const { initRemind, remind } = require('./remind.js');
-const { announce } = require('./announce.js');
-const { test } = require('./test.js');
+const { initRemind, remind } = require('./commands/remind.js');
+const { announce } = require('./commands/announce.js');
+const { test } = require('./commands/test.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
 
