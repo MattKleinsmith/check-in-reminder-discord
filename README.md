@@ -7,3 +7,4 @@ TODO:
 - [x] Say user's name when they join a voice channel (text-to-speech)
 - [x] Don't say name of first and second joiner. Also remove the false positive of mute/unmute.
 - [ ] Start the reminder loop on startup (instead of via a command)
+- [ ] Write unit tests
