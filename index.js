@@ -145,10 +145,8 @@ client.on('voiceStateUpdate', async (oldState, newState) => {
             adapterCreator: newState.guild.voiceAdapterCreator
         });
 
-        const resource =
-            createAudioResource(dest, {
-                inlineVolume: true
-            })
+        const resource = createAudioResource(dest, { inlineVolume: true })
+        resource.volume.setVolume(.7 * resource.volume.volume)
 
         const player = createAudioPlayer();
         connection.subscribe(player)
