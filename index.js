@@ -2,6 +2,7 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 const { initRemind, remind } = require('./commands/remind.js');
 const { announce } = require('./commands/announce.js');
+const { initEnforce, enforce } = require('./commands/enforce.js');
 const { test } = require('./commands/test.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
@@ -9,10 +10,10 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 client.once('ready', () => {
     console.log('Ready!', client.user.username, "\n");
 
-    initRemind.bind(this)();
+    initRemind.call(this);
 
-    // Get guild object via guild name substring "App Academy August-01-2022 Cohort"
-    // Get channel object via channel id: 1001711778952130662
+    initEnforce.call(this, client);
+    setInterval(enforce.bind(this, client), 2000);
 });
 
 client.on('voiceStateUpdate', announce);
@@ -35,9 +36,10 @@ client.on('interactionCreate', async interaction => {
             await interaction.deleteReply();
         }
 
-        if (!this.checkerId) this.checkerId = setInterval(remind.bind(this), 30 * 1000, interaction);
+        if (!this.enforceId) this.enforceId = setInterval(remind.bind(this), 30 * 1000, interaction);
     } else if (commandName === 'test') {
-        test.bind(this)(interaction);
+        test.call(this, interaction);
+
     }
 });
 
