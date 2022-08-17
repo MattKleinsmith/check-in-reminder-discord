@@ -13,9 +13,11 @@ const initEnforce = function (client) {
     this.enforcedChannels = channels;
     // this.enforcedChannels = client.channels.cache.get("985966960334491671");  // Test server
 
-    const assessmentPrep = client.channels.cache.get("1001987887669190666");
     // const assessmentPrep = client.channels.cache.get("1009505830225326190");  // Test server
-    this.enforceReply = assessmentPrep.toString();
+    const assessmentPrep = client.channels.cache.get("1001987887669190666");
+    const oldReply = assessmentPrep.toString();
+    // enforceReplies is an array to avoid spamming when changing it. Should only have a length of two.
+    this.enforceReplies = [`To avoid a/A Code of Conduct violations, please use ${assessmentPrep} to discuss the assessment.`, oldReply]
 }
 
 const enforce = function (client) {
@@ -29,7 +31,7 @@ const enforce = function (client) {
 
         // Get IDs of already-replied-to triggers
         const alreadyRepliedIds = messages
-            .filter(message => message.content.includes(this.enforceReply) && message.reference)
+            .filter(message => this.enforceReplies.some(r => message.content.includes(r)) && message.reference)
             .map(message => message.reference.messageId);
 
         // Filter triggers
@@ -38,7 +40,7 @@ const enforce = function (client) {
         // Reply to each
         unrepliedTriggers.forEach(message => {
             console.log("Replying to", `"${message.content}"`, "by", message.author.username);
-            message.reply(this.enforceReply);
+            message.reply(this.enforceReplies[0]);
         })
     }))
 
