@@ -4,8 +4,12 @@ const initEnforce = function (client) {
     this.enforceKeywords.push("exam");
 
     const generalChat = client.channels.cache.get("1001711778952130662");
-    const questionsChat = client.channels.cache.get("1001987003149209610");
-    const channels = [generalChat, questionsChat]
+    const questions = client.channels.cache.get("1001987003149209610");
+    const generalCodingDiscussion = client.channels.cache.get("1004151041538920488");
+    const resources = client.channels.cache.get("1001987027450990652");
+    const projectIdeas = client.channels.cache.get("1001987149371031572");
+
+    const channels = [generalChat, questions, generalCodingDiscussion, resources, projectIdeas]
     this.enforcedChannels = channels;
     // this.enforcedChannels = client.channels.cache.get("985966960334491671");  // Test server
 
