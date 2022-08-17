@@ -1,9 +1,9 @@
-const initRemind = function () {
+const initRemind = function (client) {
     this.weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
     this.checkIns = [
         { start: "7:55:00 AM", end: "8:03:00 AM", seen: false, isReport: false },
-        { start: "12:25:00 PM", end: "1:03:00 PM", seen: false, isReport: false },
+        { start: "12:25:00 PM", end: "12:33:00 PM", seen: false, isReport: false },
         { start: "2:55:00 PM", end: "3:03:00 PM", seen: false, isReport: false },
 
         // { start: "12:00:00 AM", end: "11:59:00 PM", seen: false, isReport: false },  // test
@@ -14,14 +14,22 @@ const initRemind = function () {
     this.timezone = 'America/Los_Angeles';
 
     this.today = new Date().toLocaleString('en-US', { timeZone: this.timezone, weekday: 'long' });  // Monday
+
+    this.reminderChannel = client.channels.cache.get("1001987887669190666");  // #assessment-prep
+    // this.reminderChannel = client.channels.cache.get("985966960334491671");  // Test server
+
+    this.cohortGuild = client.guilds.cache.get("1001711778490744884");
+    this.reminderRole = "1001987887669190666";  // Codebusters role
+
+    console.table(this.checkIns);
 }
 
-const remind = async function (interaction) {
+const remind = function () {
     const dayOfWeek = new Date().toLocaleString('en-US', { timeZone: this.timezone, weekday: 'long' })  // "Monday"
     const fullDate = new Date().toLocaleString('en-US', { timeZone: this.timezone })  // '8/10/2022, 4:19:54 PM'
     const date = fullDate.split(',')[0]  // '8/10/2022'
 
-    console.log("Checking time:", dayOfWeek, fullDate, "PST")
+    // console.log("Checking time:", dayOfWeek, fullDate, "PST")
 
     // Reset check-in reminders each day
     if (dayOfWeek !== this.today) {
@@ -43,13 +51,11 @@ const remind = async function (interaction) {
         if (!checkIn.seen && new Date(fullDate) >= new Date(start) && new Date(fullDate) < new Date(end)) {
             console.log("Sending reminder");
 
-            const role = interaction.guild.roles.cache.find(r => r.name === "Codebusters");
-
             if (checkIn.isReport) {
                 // TODO: Do not follow up. Just send a message to that channel.
-                await interaction.channel.send(`<@&${role.id}> Don't forget to fill out the daily report`);
+                this.reminderChannel.send(`<@&${this.reminderRole}> Don't forget to fill out the daily report: https://progress.appacademy.io/`);
             } else {
-                await interaction.channel.send(`<@&${role.id}> Don't forget to check in`);
+                this.reminderChannel.send(`<@&${this.reminderRole}> Don't forget to check in: https://progress.appacademy.io/`);
             }
             checkIn.seen = true;
         }
