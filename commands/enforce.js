@@ -18,6 +18,8 @@ const initEnforce = function (client) {
     const oldReply = assessmentPrep.toString();
     // enforceReplies is an array to avoid spamming when changing it. Should only have a length of two.
     this.enforceReplies = [`To avoid a/A Code of Conduct violations, please use ${assessmentPrep} to discuss the assessment.`, oldReply]
+
+    this.gigabrax = "<:gigabrax:1009607197547835573>"
 }
 
 const enforce = function (client) {
@@ -41,6 +43,26 @@ const enforce = function (client) {
         unrepliedTriggers.forEach(message => {
             console.log("Replying to", `"${message.content}"`, "by", message.author.username);
             message.reply(this.enforceReplies[0]);
+        })
+    }))
+
+    // GIGABRAX
+    this.enforcedChannels.forEach(channel => channel.messages.fetch({ limit: 10 }).then(messages => {
+        // Get recent messages that match the memeword
+        const allTriggers = messages.filter(message => message.content === this.gigabrax && message.author.username != client.user.username);
+
+        // Get IDs of already-replied-to triggers
+        const alreadyRepliedIds = messages
+            .filter(message => message.content === this.gigabrax && message.reference)
+            .map(message => message.reference.messageId);
+
+        // Filter triggers
+        const unrepliedTriggers = allTriggers.filter(message => !alreadyRepliedIds.includes(message.id))
+
+        // Reply to each
+        unrepliedTriggers.forEach(message => {
+            console.log("Replying to", `"${message.content}"`, "by", message.author.username);
+            message.reply(this.gigabrax);
         })
     }))
 

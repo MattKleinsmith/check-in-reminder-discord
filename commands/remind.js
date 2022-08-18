@@ -19,7 +19,7 @@ const initRemind = function (client) {
     // this.reminderChannel = client.channels.cache.get("985966960334491671");  // Test server
 
     this.cohortGuild = client.guilds.cache.get("1001711778490744884");
-    this.reminderRole = "1001987887669190666";  // Codebusters role
+    this.reminderRole = "1002792225727598644";  // Codebusters role
 
     console.table(this.checkIns);
 }
