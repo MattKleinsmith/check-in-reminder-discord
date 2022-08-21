@@ -40,7 +40,6 @@ const remind = function () {
 
     // Don't remind on weekends
     if (!this.weekdays.includes(dayOfWeek)) {
-        console.log("Invalid weekday")
         return;
     }
 

@@ -15,9 +15,11 @@ client.once('ready', () => {
 
     initEnforce.call(this, client);
     setInterval(enforce.bind(this, client), 2 * 1000);
+
+    this.username = client.user.username;
 });
 
-client.on('voiceStateUpdate', announce);
+client.on('voiceStateUpdate', announce.bind(this));
 client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
 

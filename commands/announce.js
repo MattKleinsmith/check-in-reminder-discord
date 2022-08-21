@@ -39,13 +39,14 @@ const announce = async function (oldState, newState) {
 
     const userJoinedChannel = (oldChannel !== newChannel) && ((!oldChannel && newChannel) || (oldChannel && newChannel));
     if (userJoinedChannel &&
-        newState.member.displayName !== this.user.username &&
-        newState.channel.members.size >= 3) {  // Two or more users + one joiner
+        newState.member.user.username !== this.username &&
+        newState.channel.members.size >= 1) {  // Two or more users + one joiner
+
         console.log(newState.member.displayName, 'joined a voice channel', oldChannel, newChannel);
 
-        const literalPath = `cache/${newState.member.displayName}.mp3`;
-        const dest = path.resolve(__dirname, literalPath); // file destination
-        if (!fs.existsSync(literalPath)) {
+        const relativePath = `../cache/${newState.member.displayName}.mp3`;
+        const absolutePath = path.resolve(__dirname, relativePath); // file destination
+        if (!fs.existsSync(absolutePath)) {
             const utterance = newState.member.displayName + " has joined";
             const url = googleTTS.getAudioUrl(utterance, {
                 lang: 'en',
@@ -53,11 +54,11 @@ const announce = async function (oldState, newState) {
                 host: 'https://translate.google.com',
             });
             console.log(url)
-            console.log('Download to ' + dest + ' ...');
-            await downloadFile(url, dest);
+            console.log('Download to ' + absolutePath + ' ...');
+            await downloadFile(url, absolutePath);
             console.log('Download success');
         } else {
-            console.log("Already exists:", dest);
+            console.log("Already exists:", absolutePath);
         }
 
         const connection = joinVoiceChannel({
@@ -66,12 +67,12 @@ const announce = async function (oldState, newState) {
             adapterCreator: newState.guild.voiceAdapterCreator
         });
 
-        const resource = createAudioResource(dest, { inlineVolume: true })
+        const resource = createAudioResource(absolutePath, { inlineVolume: true })
         resource.volume.setVolume(.7 * resource.volume.volume)
 
         const player = createAudioPlayer();
         connection.subscribe(player)
-        console.log('Playing', dest);
+        console.log('Playing', absolutePath);
         player.play(resource)
 
         player.on(AudioPlayerStatus.Idle, () => {
