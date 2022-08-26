@@ -40,14 +40,15 @@ const announce = async function (oldState, newState) {
     const userJoinedChannel = (oldChannel !== newChannel) && ((!oldChannel && newChannel) || (oldChannel && newChannel));
     if (userJoinedChannel &&
         newState.member.user.username !== this.username &&
-        newState.channel.members.size >= 1) {  // Two or more users + one joiner
+        newState.channel.members.size >= 3) {  // Two or more users + one joiner
 
-        console.log(newState.member.displayName, 'joined a voice channel', oldChannel, newChannel);
+        const safeName = newState.member.displayName.replace("/", "-");
+        console.log(`${safeName} joined a voice channel`, oldChannel, newChannel);
 
-        const relativePath = `../cache/${newState.member.displayName}.mp3`;
+        const relativePath = `../cache/${safeName}.mp3`;
         const absolutePath = path.resolve(__dirname, relativePath); // file destination
         if (!fs.existsSync(absolutePath)) {
-            const utterance = newState.member.displayName + " has joined";
+            const utterance = `${safeName} has joined`;
             const url = googleTTS.getAudioUrl(utterance, {
                 lang: 'en',
                 slow: false,
