@@ -15,11 +15,12 @@ const initRemind = function (client) {
 
     this.today = new Date().toLocaleString('en-US', { timeZone: this.timezone, weekday: 'long' });  // Monday
 
-    this.reminderChannel = client.channels.cache.get("1001987887669190666");  // #assessment-prep
+    this.reminderChannel = client.channels.cache.get("1001711778952130662");  // #general
     // this.reminderChannel = client.channels.cache.get("985966960334491671");  // Test server
 
     this.cohortGuild = client.guilds.cache.get("1001711778490744884");
     this.reminderRole = "1002792225727598644";  // Codebusters role
+    this.friendRole = "1006573434161082508";  // Friend role
 
     console.table(this.checkIns);
 }
@@ -52,9 +53,9 @@ const remind = function () {
 
             if (checkIn.isReport) {
                 // TODO: Do not follow up. Just send a message to that channel.
-                this.reminderChannel.send(`<@&${this.reminderRole}> Don't forget to fill out the daily report: https://progress.appacademy.io/`);
+                this.reminderChannel.send(`<@&${this.reminderRole}> <@&${this.friendRole}> Don't forget to fill out the daily report: https://progress.appacademy.io/`);
             } else {
-                this.reminderChannel.send(`<@&${this.reminderRole}> Don't forget to check in: https://progress.appacademy.io/`);
+                this.reminderChannel.send(`<@&${this.reminderRole}> <@&${this.friendRole}> Don't forget to check in: https://progress.appacademy.io/`);
             }
             checkIn.seen = true;
         }
