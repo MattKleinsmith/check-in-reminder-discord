@@ -11,12 +11,10 @@ const initRemind = function (client) {
 
     this.timezone = 'America/Los_Angeles';
 
-    this.today = new Date().toLocaleString('en-US', { timeZone: this.timezone, weekday: 'long' });  // Monday
+    this.todayDoW = new Date().toLocaleString('en-US', { timeZone: this.timezone, weekday: 'long' });  // "Monday"
 
-    this.reminderChannel = client.channels.cache.get("1013850605619531806");  // #general
-
-    this.cohortGuild = client.guilds.cache.get("1001711778490744884");
-    this.reminderRole = "1013844230269063240";  // Codebusters role
+    this.reminderChannel = client.channels.cache.get("1013850605619531806");  // Cohort-only "general-chat"
+    this.reminderRole = "1013844230269063240";  // "Cohort 8-29"
 
     console.table(this.checkIns);
 }
@@ -27,9 +25,9 @@ const remind = function () {
     const date = fullDate.split(',')[0]  // '8/10/2022'
 
     // Reset check-in reminders each day
-    if (dayOfWeek !== this.today) {
+    if (dayOfWeek !== this.todayDoW) {
         console.log("New day")
-        this.today = dayOfWeek;
+        this.todayDoW = dayOfWeek;
         for (let checkIn of this.checkIns) checkIn.seen = false;
     }
 
