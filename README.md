@@ -9,3 +9,6 @@ TODO:
 - [x] Reply to "assessment" if outside of cohort-only channel
 - [x] Start the reminder loop on startup (instead of via a command)
 - [ ] Write unit tests
+- [ ] Join voice channel upon startup to eat the one-time lag
+- [ ] Find memory leak
+- [ ] Add break reminders

@@ -1,7 +1,6 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 const { initRemind, remind } = require('./commands/remind.js');
-const { announce } = require('./commands/announce.js');
 const { initEnforce, enforce } = require('./commands/enforce.js');
 const { test } = require('./commands/test.js');
 
@@ -19,7 +18,6 @@ client.once('ready', () => {
     this.username = client.user.username;
 });
 
-client.on('voiceStateUpdate', announce.bind(this));
 client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
 

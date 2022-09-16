@@ -49,7 +49,7 @@ const remind = function () {
         const start = date + ", " + checkIn.start;
         const end = date + ", " + checkIn.end;
         if (!checkIn.seen && new Date(fullDate) >= new Date(start) && new Date(fullDate) < new Date(end)) {
-            console.log("Sending reminder");
+            console.log("Sending reminder", fullDate);
 
             if (checkIn.isReport) {
                 // TODO: Do not follow up. Just send a message to that channel.
