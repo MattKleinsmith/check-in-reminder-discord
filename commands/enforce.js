@@ -1,5 +1,6 @@
 const memwatch = require('node-memwatch-new');
 
+const { MessageMentions: { USERS_PATTERN } } = require('discord.js');
 
 const { MessageAttachment, Message } = require('discord.js');
 
@@ -45,6 +46,10 @@ const initEnforce = function (client) {
 
     this.hotBot = "hot bot"
     this.hotBotReply = "😳"
+
+    this.welcomeChannel = client.channels.cache.get("1001711778490744887");
+    this.welcomeReplyStem = ", welcome to the Discord. To help us follow a/A's Code of Conduct, please set your server nickname to your real name, if you haven't already.\nHow: Right click your name --> Edit Server Profile --> Nickname"
+    this.welcomeReply = "Hi <@REPLACE>" + this.welcomeReplyStem;
 }
 
 const enforce = function (client) {
@@ -72,6 +77,30 @@ const enforce = function (client) {
             message.reply(this.enforceReplies[0]);
         })
     }))
+
+    this.welcomeChannel.messages.fetch({ limit: 10 }).then(messages => {
+        // Get recent messages that match
+        const allTriggers = messages.filter(message => {
+            return message.content.includes(", welcome to **App Academy August-01-2022 Cohort**!");
+        });
+
+        // Get IDs of already-replied-to triggers
+        const alreadyRepliedIds = messages
+            .filter(message => {
+                return message.content.includes(this.welcomeReplyStem) && message.reference;
+            })
+            .map(message => message.reference.messageId);
+
+        // Don't reply twice
+        const unrepliedTriggers = allTriggers.filter(message => !alreadyRepliedIds.includes(message.id))
+
+        // Reply to each
+        unrepliedTriggers.forEach(message => {
+            console.log("Replying to", `"${message.content}"`, "by", message.author.username);
+            const userId = message.content.split("<@")[1].split(">")[0];
+            message.reply(this.welcomeReply.replace("REPLACE", userId));
+        })
+    })
 
     // // GIGABRAX
     // this.memeChannels.forEach(channel => channel.messages.fetch({ limit: 10 }).then(messages => {
