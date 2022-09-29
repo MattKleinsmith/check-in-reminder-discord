@@ -2,7 +2,6 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 const { initRemind, remind } = require('./commands/remind.js');
 const { initEnforce, enforce } = require('./commands/enforce.js');
-const { test } = require('./commands/test.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
 
@@ -16,21 +15,6 @@ client.once('ready', () => {
     setInterval(enforce.bind(this, client), 2 * 1000);
 
     this.username = client.user.username;
-});
-
-client.on('interactionCreate', async interaction => {
-    if (!interaction.isChatInputCommand()) return;
-
-    const { commandName } = interaction;
-    console.log(commandName)
-
-    if (commandName === 'quietstart') {
-        await interaction.reply(".", { ephemeral: true });
-        await interaction.deleteReply();
-    }
-    else if (commandName === 'test') {
-        test.call(this, interaction);
-    }
 });
 
 client.on('shardError', error => {

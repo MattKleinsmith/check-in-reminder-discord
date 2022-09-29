@@ -1,3 +1,6 @@
+const memwatch = require('node-memwatch-new');
+
+
 const { MessageAttachment, Message } = require('discord.js');
 
 const initEnforce = function (client) {
@@ -45,6 +48,8 @@ const initEnforce = function (client) {
 }
 
 const enforce = function (client) {
+    // const hd = new memwatch.HeapDiff();
+
     this.enforcedChannels.forEach(channel => channel.messages.fetch({ limit: 10 }).then(messages => {
         // Get recent messages that include a keyword
         const allTriggers = messages.filter(message => {
@@ -68,90 +73,95 @@ const enforce = function (client) {
         })
     }))
 
-    // GIGABRAX
-    this.memeChannels.forEach(channel => channel.messages.fetch({ limit: 10 }).then(messages => {
-        // Get recent messages that match the memeword
-        const allTriggers = messages.filter(message => message.content === this.gigabrax && message.author.username != client.user.username);
+    // // GIGABRAX
+    // this.memeChannels.forEach(channel => channel.messages.fetch({ limit: 10 }).then(messages => {
+    //     // Get recent messages that match the memeword
+    //     const allTriggers = messages.filter(message => message.content === this.gigabrax && message.author.username != client.user.username);
 
-        // Get IDs of already-replied-to triggers
-        const alreadyRepliedIds = messages
-            .filter(message => message.content === this.gigabrax && message.reference)
-            .map(message => message.reference.messageId);
+    //     // Get IDs of already-replied-to triggers
+    //     const alreadyRepliedIds = messages
+    //         .filter(message => message.content === this.gigabrax && message.reference)
+    //         .map(message => message.reference.messageId);
 
-        // Don't reply twice
-        const unrepliedTriggers = allTriggers.filter(message => !alreadyRepliedIds.includes(message.id))
+    //     // Don't reply twice
+    //     const unrepliedTriggers = allTriggers.filter(message => !alreadyRepliedIds.includes(message.id))
 
-        // Reply to each
-        unrepliedTriggers.forEach(message => {
-            console.log("Replying to", `"${message.content}"`, "by", message.author.username);
-            message.reply(this.gigabrax);
-        })
-    }))
+    //     // Reply to each
+    //     unrepliedTriggers.forEach(message => {
+    //         console.log("Replying to", `"${message.content}"`, "by", message.author.username);
+    //         message.reply(this.gigabrax);
+    //     })
+    // }))
 
 
     // TODO: Make a helper function that takes in (keywords, reply, channels)
     // Good bot
-    this.memeChannels.forEach(channel => channel.messages.fetch({ limit: 10 }).then(messages => {
-        // Get recent messages that include a keyword
-        const allTriggers = messages.filter(message => message.content.toLowerCase().includes(this.goodBot) && message.author.username != client.user.username);
-        // console.log(allTriggers.map(m => m.content))
+    // this.memeChannels.forEach(channel => channel.messages.fetch({ limit: 10 }).then(messages => {
+    //     // Get recent messages that include a keyword
+    //     const allTriggers = messages.filter(message => message.content.toLowerCase().includes(this.goodBot) && message.author.username != client.user.username);
+    //     // console.log(allTriggers.map(m => m.content))
 
-        // Get IDs of already-replied-to triggers
-        const alreadyRepliedIds = messages
-            .filter(message => message.content === this.goodBotReply && message.reference)
-            .map(message => message.reference.messageId);
+    //     // Get IDs of already-replied-to triggers
+    //     const alreadyRepliedIds = messages
+    //         .filter(message => message.content === this.goodBotReply && message.reference)
+    //         .map(message => message.reference.messageId);
 
-        // Don't reply twice
-        const unrepliedTriggers = allTriggers.filter(message => !alreadyRepliedIds.includes(message.id))
+    //     // Don't reply twice
+    //     const unrepliedTriggers = allTriggers.filter(message => !alreadyRepliedIds.includes(message.id))
 
-        // Reply to each
-        unrepliedTriggers.forEach(message => {
-            console.log("Replying to", `"${message.content}"`, "by", message.author.username);
-            message.reply(this.goodBotReply);
-        })
-    }))
+    //     // Reply to each
+    //     unrepliedTriggers.forEach(message => {
+    //         console.log("Replying to", `"${message.content}"`, "by", message.author.username);
+    //         message.reply(this.goodBotReply);
+    //     })
+    // }))
 
-    // Bad bot
-    this.memeChannels.forEach(channel => channel.messages.fetch({ limit: 10 }).then(messages => {
-        // Get recent messages that include a keyword
-        const allTriggers = messages.filter(message => message.content.toLowerCase().includes(this.badBot) && message.author.username != client.user.username);
+    // // Bad bot
+    // this.memeChannels.forEach(channel => channel.messages.fetch({ limit: 10 }).then(messages => {
+    //     // Get recent messages that include a keyword
+    //     const allTriggers = messages.filter(message => message.content.toLowerCase().includes(this.badBot) && message.author.username != client.user.username);
 
-        // Get IDs of already-replied-to triggers
-        const alreadyRepliedIds = messages
-            .filter(message => message.attachments.size > 0 && message.reference)
-            .map(message => message.reference.messageId);
+    //     // Get IDs of already-replied-to triggers
+    //     const alreadyRepliedIds = messages
+    //         .filter(message => message.attachments.size > 0 && message.reference)
+    //         .map(message => message.reference.messageId);
 
-        // Don't reply twice
-        const unrepliedTriggers = allTriggers.filter(message => !alreadyRepliedIds.includes(message.id))
+    //     // Don't reply twice
+    //     const unrepliedTriggers = allTriggers.filter(message => !alreadyRepliedIds.includes(message.id))
 
-        // Reply to each
-        unrepliedTriggers.forEach(message => {
-            console.log("Replying to", `"${message.content}"`, "by", message.author.username);
-            message.reply({ files: [{ attachment: "./cache/bad-bot.png" }] })
-        })
-    }))
+    //     // Reply to each
+    //     unrepliedTriggers.forEach(message => {
+    //         console.log("Replying to", `"${message.content}"`, "by", message.author.username);
+    //         message.reply({ files: [{ attachment: "./cache/bad-bot.png" }] })
+    //     })
+    // }))
 
-    // Hot bot
-    this.memeChannels.forEach(channel => channel.messages.fetch({ limit: 10 }).then(messages => {
-        // Get recent messages that include a keyword
-        const allTriggers = messages.filter(message => message.content.toLowerCase().includes(this.hotBot) && message.author.username != client.user.username);
-        // console.log(allTriggers.map(m => m.content))
+    // // Hot bot
+    // this.memeChannels.forEach(channel => channel.messages.fetch({ limit: 10 }).then(messages => {
+    //     // Get recent messages that include a keyword
+    //     const allTriggers = messages.filter(message => message.content.toLowerCase().includes(this.hotBot) && message.author.username != client.user.username);
+    //     // console.log(allTriggers.map(m => m.content))
 
-        // Get IDs of already-replied-to triggers
-        const alreadyRepliedIds = messages
-            .filter(message => message.content === this.hotBotReply && message.reference)
-            .map(message => message.reference.messageId);
+    //     // Get IDs of already-replied-to triggers
+    //     const alreadyRepliedIds = messages
+    //         .filter(message => message.content === this.hotBotReply && message.reference)
+    //         .map(message => message.reference.messageId);
 
-        // Don't reply twice
-        const unrepliedTriggers = allTriggers.filter(message => !alreadyRepliedIds.includes(message.id))
+    //     // Don't reply twice
+    //     const unrepliedTriggers = allTriggers.filter(message => !alreadyRepliedIds.includes(message.id))
 
-        // Reply to each
-        unrepliedTriggers.forEach(message => {
-            console.log("Replying to", `"${message.content}"`, "by", message.author.username);
-            message.reply(this.hotBotReply);
-        })
-    }))
+    //     // Reply to each
+    //     unrepliedTriggers.forEach(message => {
+    //         console.log("Replying to", `"${message.content}"`, "by", message.author.username);
+    //         message.reply(this.hotBotReply);
+    //     })
+    // }))
 
+    // const diff = hd.end();
+    // console.log(JSON.stringify(diff, null, 4));
+
+    const used = process.memoryUsage().heapUsed / 1024 / 1024;
+    console.log("Heap usage:", used, "MB");
 }
 
 module.exports = { initEnforce, enforce }

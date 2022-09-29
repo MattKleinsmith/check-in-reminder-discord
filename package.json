@@ -11,6 +11,7 @@
         "discord.js": "^14.2.0",
         "ffmpeg-static": "^5.0.2",
         "google-tts-api": "^2.0.2",
+        "node-memwatch-new": "0.0.3",
         "sodium": "^3.0.2"
     }
 }
