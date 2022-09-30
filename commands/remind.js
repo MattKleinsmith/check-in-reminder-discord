@@ -2,11 +2,13 @@ const initRemind = function (client) {
     this.weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
     this.checkIns = [
-        { start: "7:55:00 AM", end: "8:03:00 AM", seen: false, isReport: false },
-        { start: "12:25:00 PM", end: "12:33:00 PM", seen: false, isReport: false },
-        { start: "2:55:00 PM", end: "3:03:00 PM", seen: false, isReport: false },
+        { start: "7:55:00 AM", end: "8:03:00 AM", seen: false, type: "checkIn" },
+        { start: "11:15:00 AM", end: "11:20:00 AM", seen: false, type: "break" },
+        { start: "12:25:00 PM", end: "12:33:00 PM", seen: false, type: "checkIn" },
+        { start: "2:45:00 PM", end: "2:50:00 PM", seen: false, type: "break" },
+        { start: "2:55:00 PM", end: "3:03:00 PM", seen: false, type: "checkIn" },
 
-        { start: "6:00:00 PM", end: "7:00:00 PM", seen: false, isReport: true },  // Report
+        { start: "6:00:00 PM", end: "7:00:00 PM", seen: false, type: "report" },  // Report
     ];
 
     this.timezone = 'America/Los_Angeles';
@@ -43,10 +45,12 @@ const remind = function () {
         if (!checkIn.seen && new Date(fullDate) >= new Date(start) && new Date(fullDate) < new Date(end)) {
             console.log("Sending reminder", fullDate);
 
-            if (checkIn.isReport) {
+            if (checkIn.type === "report") {
                 this.reminderChannel.send(`<@&${this.reminderRole}> Don't forget to fill out the daily report: https://progress.appacademy.io/`);
-            } else {
+            } else if (checkIn.type === "checkIn") {
                 this.reminderChannel.send(`<@&${this.reminderRole}> Don't forget to check in: https://progress.appacademy.io/`);
+            } else if (checkIn.type === "break") {
+                this.reminderChannel.send(`<@&${this.reminderRole}> Break time`);
             }
             checkIn.seen = true;
         }
