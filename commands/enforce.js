@@ -189,8 +189,8 @@ const enforce = function (client) {
     // const diff = hd.end();
     // console.log(JSON.stringify(diff, null, 4));
 
-    const used = process.memoryUsage().heapUsed / 1024 / 1024;
-    console.log("Heap usage:", used, "MB");
+    // const used = process.memoryUsage().heapUsed / 1024 / 1024;
+    // console.log("Heap usage:", used, "MB");
 }
 
 module.exports = { initEnforce, enforce }
